@@ -1,0 +1,5 @@
+.env
+.vortex/
+.DS_Store
+.swiftpm/
+harness/.build/
