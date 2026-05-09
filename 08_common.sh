@@ -11,6 +11,7 @@ elif [[ -f "${ROOT_DIR}/.env.example" ]]; then
   source "${ROOT_DIR}/.env.example"
 fi
 
+#R001: Centralize shared defaults and helper functions for numbered root scripts.
 MANIFOLD_INGEST_KEY="${MANIFOLD_INGEST_KEY:-local-ingest-key}"
 MANIFOLD_DATABASE_URL="${MANIFOLD_DATABASE_URL:-}"
 MANIFOLD_ADDR="${MANIFOLD_ADDR:-:8080}"
@@ -107,3 +108,5 @@ wait_for_http() {
   done
   return 1
 }
+
+#R005: Shared helpers expose command checks, secret loading, URL encoding, and HTTP readiness waiting.

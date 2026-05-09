@@ -16,6 +16,7 @@ class ForwardHandler(http.server.BaseHTTPRequestHandler):
         return
 
     def do_POST(self) -> None:
+        #R001: Forward ingest POST payloads to Manifold and inject the ingest key header.
         content_length = int(self.headers.get("Content-Length", "0"))
         body = self.rfile.read(content_length)
         target_url = f"{self.target_base}{self.path}"
@@ -51,6 +52,7 @@ class ForwardHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(payload)
 
     def do_GET(self) -> None:
+        #R005: Expose a local `/healthz` endpoint for startup/readiness checks.
         if self.path == "/healthz":
             self.send_response(200)
             self.send_header("Content-Type", "application/json")

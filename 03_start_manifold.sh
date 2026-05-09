@@ -3,11 +3,12 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
-source "${SCRIPT_DIR}/08-common.sh"
+source "${SCRIPT_DIR}/08_common.sh"
 
 ensure_command go
 ensure_command curl
 
+#R001: Start the Manifold process and persist pid/log state under the Vortex state directory.
 ensure_manifold_database_url
 
 mkdir -p "${ROOT_DIR}/${VORTEX_STATE_DIR}"
@@ -50,4 +51,5 @@ PY
   exit 1
 fi
 
+#R005: Block until `/readyz` responds so downstream steps only run against a ready Manifold.
 echo "Manifold is ready."

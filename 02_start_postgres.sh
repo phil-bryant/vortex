@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
-source "${SCRIPT_DIR}/08-common.sh"
+source "${SCRIPT_DIR}/08_common.sh"
 
 ensure_command psql
 ensure_command pg_isready
@@ -11,6 +11,7 @@ ensure_command zsh
 ensure_command 1psa
 ensure_command rg
 
+#R001: Validate Postgres reachability and retrieve required credentials before orchestration continues.
 echo "Checking PostgreSQL reachability..."
 admin_password="$(get_psa_secret "${POSTGRES_PSA_ITEM}" "${POSTGRES_PSA_FIELD}")"
 if [[ -z "${admin_password}" ]]; then
@@ -91,4 +92,5 @@ if ! psql "${MANIFOLD_DATABASE_URL}" -c "select 1;" >/dev/null 2>&1; then
   exit 1
 fi
 
+#R005: Export a usable MANIFOLD_DATABASE_URL for downstream numbered scripts.
 echo "PostgreSQL is reachable."

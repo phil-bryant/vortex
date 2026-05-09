@@ -3,10 +3,11 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
-source "${SCRIPT_DIR}/08-common.sh"
+source "${SCRIPT_DIR}/08_common.sh"
 
 ensure_command curl
 
+#R001: Verify proxy and Manifold health/readiness endpoints for the end-to-end path.
 ensure_manifold_database_url
 
 proxy_health_url="http://${VORTEX_PROXY_ADDR}/healthz"
@@ -23,6 +24,7 @@ echo "Checking ${ready_url}..."
 curl --silent --show-error --fail "${ready_url}" >/dev/null
 
 if command -v psql >/dev/null 2>&1; then
+  #R005: Confirm at least one ingested harness row exists when database tools are available.
   echo "Verifying ingested events in PostgreSQL..."
   event_count_raw="$(psql "${MANIFOLD_DATABASE_URL}" -t -A -c \
     "select count(*) from ingest_events where event_name = '${VORTEX_E2E_EVENT_NAME}' and component = 'vortex.harness';")"

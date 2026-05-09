@@ -3,11 +3,12 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
-source "${SCRIPT_DIR}/08-common.sh"
+source "${SCRIPT_DIR}/08_common.sh"
 
 ensure_command python3
 ensure_command curl
 
+#R001: Launch the local ingest proxy that injects the required ingest key header.
 mkdir -p "${ROOT_DIR}/${VORTEX_STATE_DIR}"
 
 if [[ -f "${ROOT_DIR}/${VORTEX_PROXY_PID_FILE}" ]]; then
@@ -22,7 +23,7 @@ fi
 target_url="http://127.0.0.1${MANIFOLD_ADDR}"
 (
   cd "${ROOT_DIR}"
-  python3 "${ROOT_DIR}/09-ingest-proxy.py" \
+  python3 "${ROOT_DIR}/09_ingest_proxy.py" \
     --bind "${VORTEX_PROXY_ADDR}" \
     --target "${target_url}" \
     --ingest-key "${MANIFOLD_INGEST_KEY}" >>"${ROOT_DIR}/${VORTEX_PROXY_LOG}" 2>&1
@@ -36,4 +37,5 @@ if ! wait_for_http "http://${VORTEX_PROXY_ADDR}/healthz" 10; then
   exit 1
 fi
 
+#R005: Wait for proxy health before handing traffic to harness uploads.
 echo "Ingest proxy is ready on ${VORTEX_PROXY_ADDR}."

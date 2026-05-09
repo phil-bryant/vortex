@@ -3,13 +3,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
-source "${SCRIPT_DIR}/08-common.sh"
+source "${SCRIPT_DIR}/08_common.sh"
 
 pid_file="${ROOT_DIR}/${VORTEX_MANIFOLD_PID_FILE}"
 if [[ ! -f "${pid_file}" ]]; then
   exit 0
 fi
 
+#R001: Stop the running Manifold process identified by the stored pid.
 pid="$(<"${pid_file}")"
 if [[ -n "${pid}" ]] && kill -0 "${pid}" >/dev/null 2>&1; then
   kill "${pid}" >/dev/null 2>&1 || true
@@ -21,4 +22,5 @@ if [[ -n "${pid}" ]] && kill -0 "${pid}" >/dev/null 2>&1; then
   done
 fi
 
+#R005: Remove the Manifold pid file once the process stop attempt completes.
 rm -f "${pid_file}"

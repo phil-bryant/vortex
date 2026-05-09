@@ -5,27 +5,30 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="${SCRIPT_DIR}"
 
 # shellcheck disable=SC1091
-source "${SCRIPT_DIR}/08-common.sh"
+source "${SCRIPT_DIR}/08_common.sh"
 
 ensure_command go
 ensure_command swift
 ensure_command cmake
 ensure_command curl
 
-./02-start-postgres.sh
+#R001: The orchestrator starts by ensuring all required toolchain commands are present.
+./02_start_postgres.sh
 
 echo "Building Fountain static library..."
 cmake -S "${ROOT_DIR}/${VORTEX_FOUNTAIN_DIR}" -B "${ROOT_DIR}/${VORTEX_FOUNTAIN_BUILD_DIR}"
 cmake --build "${ROOT_DIR}/${VORTEX_FOUNTAIN_BUILD_DIR}" --target fountain
 
 cleanup() {
-  ./06-stop-ingest-proxy.sh || true
-  ./07-stop-manifold.sh || true
+  #R010: Cleanup path executes stop scripts in numbered order.
+  ./06_stop_ingest_proxy.sh || true
+  ./07_stop_manifold.sh || true
 }
 trap cleanup EXIT
 
-./03-start-manifold.sh
-./04-start-ingest-proxy.sh
+#R005: The main operator entrypoint executes the numbered start flow before verification.
+./03_start_manifold.sh
+./04_start_ingest_proxy.sh
 
 echo "Running Swift harness..."
 fountain_build_dir="${ROOT_DIR}/${VORTEX_FOUNTAIN_BUILD_DIR}"
@@ -43,6 +46,7 @@ swift run \
   -Xlinker "-lc++" \
   VortexHarness
 
-./05-verify-e2e.sh
+./05_verify_e2e.sh
 
+#R015: The legacy scripts directory is unused; this root script coordinates all numbered root scripts.
 echo "Completed end-to-end diagnostics flow."
