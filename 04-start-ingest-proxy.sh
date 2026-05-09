@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
-source "${SCRIPT_DIR}/common.sh"
+source "${SCRIPT_DIR}/08-common.sh"
 
 ensure_command python3
 ensure_command curl
@@ -22,7 +22,7 @@ fi
 target_url="http://127.0.0.1${MANIFOLD_ADDR}"
 (
   cd "${ROOT_DIR}"
-  python3 "${ROOT_DIR}/scripts/ingest_proxy.py" \
+  python3 "${ROOT_DIR}/09-ingest-proxy.py" \
     --bind "${VORTEX_PROXY_ADDR}" \
     --target "${target_url}" \
     --ingest-key "${MANIFOLD_INGEST_KEY}" >>"${ROOT_DIR}/${VORTEX_PROXY_LOG}" 2>&1

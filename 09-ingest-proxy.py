@@ -51,7 +51,6 @@ class ForwardHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(payload)
 
     def do_GET(self) -> None:
-        # keep one endpoint for quick smoke checks
         if self.path == "/healthz":
             self.send_response(200)
             self.send_header("Content-Type", "application/json")

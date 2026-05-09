@@ -36,7 +36,7 @@ Key values:
 ## Run End-to-End
 
 ```bash
-bash scripts/run-e2e.sh
+bash ./01-run-e2e.sh
 ```
 
 What this command does:
@@ -54,13 +54,15 @@ What this command does:
 
 ## Script Reference
 
-- `scripts/start-postgres.sh`: validates database reachability.
-- `scripts/start-manifold.sh`: starts Manifold in background and waits for readiness.
-- `scripts/stop-manifold.sh`: stops Manifold background process.
-- `scripts/start-ingest-proxy.sh`: starts local ingest proxy that adds `X-Manifold-Ingest-Key`.
-- `scripts/stop-ingest-proxy.sh`: stops local ingest proxy.
-- `scripts/verify-e2e.sh`: checks `/healthz`, `/readyz`, and (if `psql` exists) confirms ingested event rows.
-- `scripts/run-e2e.sh`: full orchestration command.
+- `01-run-e2e.sh`: full orchestration entrypoint.
+- `02-start-postgres.sh`: validates DB connectivity and provisions Manifold DB state if needed.
+- `03-start-manifold.sh`: starts Manifold in background and waits for readiness.
+- `04-start-ingest-proxy.sh`: starts local ingest proxy that adds `X-Manifold-Ingest-Key`.
+- `05-verify-e2e.sh`: checks `/healthz`, `/readyz`, and (if `psql` exists) confirms ingested rows.
+- `06-stop-ingest-proxy.sh`: stops local ingest proxy.
+- `07-stop-manifold.sh`: stops Manifold background process.
+- `08-common.sh`: shared env + helper functions sourced by shell scripts.
+- `09-ingest-proxy.py`: proxy server used by `04-start-ingest-proxy.sh`.
 
 ## Troubleshooting
 
@@ -74,7 +76,7 @@ What this command does:
 - `503 storage_unavailable` / `/readyz` fails:
   - Verify Postgres is running and that `1psa -p localhost_postgres_manifold` returns the correct password (or set `MANIFOLD_DATABASE_URL` explicitly).
 - Build/link failures in harness:
-  - Re-run `bash scripts/run-e2e.sh` so Fountain rebuilds first.
+  - Re-run `bash ./01-run-e2e.sh` so Fountain rebuilds first.
   - Confirm `../fountain`, `../piston`, and `../manifold` paths are correct from `vortex`.
 - No separate Vortex database is required:
-  - Vortex orchestrates only; Manifold stores data in its own Postgres database (`manifold` by default).
+  - Vortex orchestrates only; Manifold stores data in its own Postgres database (`prod` by default).

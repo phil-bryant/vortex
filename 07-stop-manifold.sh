@@ -3,9 +3,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
-source "${SCRIPT_DIR}/common.sh"
+source "${SCRIPT_DIR}/08-common.sh"
 
-pid_file="${ROOT_DIR}/${VORTEX_PROXY_PID_FILE}"
+pid_file="${ROOT_DIR}/${VORTEX_MANIFOLD_PID_FILE}"
 if [[ ! -f "${pid_file}" ]]; then
   exit 0
 fi
